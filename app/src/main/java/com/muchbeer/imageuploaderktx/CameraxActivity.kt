@@ -23,6 +23,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
+import com.muchbeer.imageuploaderktx.api.Repository
 import com.muchbeer.imageuploaderktx.api.UploadInstance
 import com.muchbeer.imageuploaderktx.databinding.ActivityCameraxBinding
 import com.muchbeer.imageuploaderktx.model.ImageResponse
@@ -167,12 +168,6 @@ class CameraxActivity : AppCompatActivity() {
             return
         }
 
-        val logger = HttpLoggingInterceptor {
-            Log.d(TAG, it)
-        }
-        logger.level = HttpLoggingInterceptor.Level.BASIC
-        val requestFileBody = selectedImageFile!!.asRequestBody(contentType = "image/*".toMediaTypeOrNull())
-
 
         // Use the imgur image upload API as documented at https://api.imgur.com/endpoints/image
         val requestBody = MultipartBody.Builder()
@@ -191,10 +186,10 @@ class CameraxActivity : AppCompatActivity() {
             .post(requestBody)
             .build()
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            Log.d(TAG, "oN uPLOADING : the file is : ${selectedImageFile}")
+        lifecycleScope.launchWhenStarted() {
+            Repository().okhttpRun(selectedImageFile)
 
-            try {
+          /*  try {
                 client
                     .newCall(request)
                     .execute().use { response ->
@@ -213,7 +208,7 @@ class CameraxActivity : AppCompatActivity() {
                 }
             } catch (io: IOException) {
                 Log.d(TAG, "Unexpected error is : ${io.message}")
-            }
+            }*/
         }
 
     }
