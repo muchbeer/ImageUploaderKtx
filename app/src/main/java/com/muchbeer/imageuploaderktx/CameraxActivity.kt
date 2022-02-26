@@ -62,19 +62,6 @@ class CameraxActivity : AppCompatActivity() {
         private var selectedImageFile : File? = null
     private var selectedImageUri : Uri? = null
 
-    val logger = HttpLoggingInterceptor {
-        Log.d(TAG, it)
-    }
-  //  logger.level = HttpLoggingInterceptor.Level.BASIC
-
-    private val client = OkHttpClient.Builder()
-        .connectTimeout(100, TimeUnit.SECONDS)
-        .writeTimeout(100, TimeUnit.SECONDS)
-        .readTimeout(100, TimeUnit.SECONDS)
-        .callTimeout(100, TimeUnit.SECONDS)
-        .addInterceptor(logger)
-        .build()
-
     private val requestCameraPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission())
         { isPermissionGrant ->
@@ -101,7 +88,7 @@ class CameraxActivity : AppCompatActivity() {
 
         requestCameraPermission.launch(android.Manifest.permission.CAMERA)
 
-        logger.level = HttpLoggingInterceptor.Level.BASIC
+
         binding.apply {
             imgCaptureBtn.setOnClickListener {
                 takePhoto()
@@ -168,47 +155,8 @@ class CameraxActivity : AppCompatActivity() {
             return
         }
 
-
-        // Use the imgur image upload API as documented at https://api.imgur.com/endpoints/image
-        val requestBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("desc", "george")
-            .addFormDataPart(
-                name = "image",
-                filename = selectedImageFile!!.name,
-                body= selectedImageFile!!.asRequestBody(contentType = MEDIA_TYPE_PNG))
-            .build()
-
-        val request = Request.Builder()
-           // .header("Accept", "application/json")
-            .url(BuildConfig.BASE_URL+ "home/Api.php?apicall=upload")
-            //.url(BuildConfig.BASE_URL + "home/upload.php)
-            .post(requestBody)
-            .build()
-
         lifecycleScope.launchWhenStarted() {
             Repository().okhttpRun(selectedImageFile)
-
-          /*  try {
-                client
-                    .newCall(request)
-                    .execute().use { response ->
-
-                        if(!response.isSuccessful) throw IOException("Exception: " + response.message) else
-                  {
-                        //println(response.body!!.string())
-
-                        val gson2 = GsonBuilder().setPrettyPrinting()
-                            .create()
-                        val prettyJson = gson2.toJson(
-                            JsonParser.parseString(response.body!!.string())
-                        )
-                        Log.d(TAG, "SUCCESS RESPONSE IS : ${prettyJson}")
-                    }
-                }
-            } catch (io: IOException) {
-                Log.d(TAG, "Unexpected error is : ${io.message}")
-            }*/
         }
 
     }

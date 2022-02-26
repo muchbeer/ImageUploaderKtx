@@ -18,14 +18,27 @@ import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 class Repository {
 
-    private val client = OkHttpClient()
+    val logger = HttpLoggingInterceptor {
+        Log.d(TAG, it)
+    }
+    private val client = OkHttpClient.Builder()
+        .connectTimeout(100, TimeUnit.SECONDS)
+        .writeTimeout(100, TimeUnit.SECONDS)
+        .readTimeout(100, TimeUnit.SECONDS)
+        .callTimeout(100, TimeUnit.SECONDS)
+        .addInterceptor(logger)
+        .build()
 
+    init {
+        logger.level = HttpLoggingInterceptor.Level.BASIC
+    }
     suspend fun okhttpRun( file : File?) = coroutineScope {
         val requestFileBody = file!!.asRequestBody(contentType = MEDIA_TYPE_PNG)
 
