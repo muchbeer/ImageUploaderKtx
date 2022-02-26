@@ -7,6 +7,7 @@ import com.google.gson.JsonParser
 import com.muchbeer.imageuploaderktx.BuildConfig
 import com.muchbeer.imageuploaderktx.CameraxActivity
 import com.muchbeer.imageuploaderktx.MainActivity
+import com.muchbeer.imageuploaderktx.model.ImageResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.flow
@@ -64,12 +65,15 @@ class Repository {
 
                         if(!response.isSuccessful) throw IOException("Error is : ${response.message}") else
                        {
+
                            val gson2 = GsonBuilder().setPrettyPrinting()
                                .create()
                            val prettyJson = gson2.toJson(
                                JsonParser.parseString(response.body!!.string())
                            )
-                           Log.d(TAG, "SUCCESS RESPONSE IS : ${prettyJson}")
+
+                           val imageLink = gson2.fromJson(prettyJson, ImageResponse::class.java)
+                           Log.d(TAG, "SUCCESS LINK IS : ${imageLink.image}")
                         }
                     }
             } catch (io: IOException) {
