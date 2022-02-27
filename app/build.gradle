@@ -16,7 +16,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
        // buildConfigField "String", "APPLICATION_ID", APPLICATION_ID
          buildConfigField "String", "APPLICATION_ID","\"com.muchbeer.imageuploaderktx\""
-        buildConfigField "String", "BASE_URL","\"https://muchbeer.ngrok.io/family/\""
+       // buildConfigField "String", "BASE_URL","\"https://muchbeer.ngrok.io/family/\""
+        buildConfigField "String", "BASE_URL", BASE_URL
     }
 
     buildTypes {

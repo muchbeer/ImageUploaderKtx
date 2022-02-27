@@ -40,12 +40,17 @@ class Repository {
     init {
         logger.level = HttpLoggingInterceptor.Level.BASIC
     }
+
+    fun okhttpUploadFlow(file : File?) = flow{
+        emit("")
+
+    }
     suspend fun okhttpRun( file : File?) = coroutineScope {
         val requestFileBody = file!!.asRequestBody(contentType = MEDIA_TYPE_PNG)
 
         val requestBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
-            .addFormDataPart("desc", "Giovanna")
+            .addFormDataPart("desc", "Gianna")
             .addFormDataPart(
                 name = "image",
                 filename = file.name,
@@ -65,7 +70,6 @@ class Repository {
 
                         if(!response.isSuccessful) throw IOException("Error is : ${response.message}") else
                        {
-
                            val gson2 = GsonBuilder().setPrettyPrinting()
                                .create()
                            val prettyJson = gson2.toJson(
@@ -86,7 +90,5 @@ class Repository {
     companion object {
         private val TAG = Repository::class.simpleName
         private val MEDIA_TYPE_PNG = "image/png".toMediaType()
-
-
     }
 }
