@@ -8,24 +8,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.muchbeer.imageuploaderktx.api.Repository
-import com.muchbeer.imageuploaderktx.api.UploadInstance
 import com.muchbeer.imageuploaderktx.databinding.ActivityMainBinding
-import com.muchbeer.imageuploaderktx.util.UriFileConverter
-import com.muchbeer.imageuploaderktx.util.getFileName
-import com.muchbeer.imageuploaderktx.util.getRealPathFromURI
 import com.muchbeer.imageuploaderktx.util.snackbar
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.*
-import java.net.URI
 
 
 class MainActivity : AppCompatActivity() {
@@ -36,7 +22,6 @@ class MainActivity : AppCompatActivity() {
     private var selectedImageFile : File? = null
 
    private val takePhoto = registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess->
-
         if (isSuccess) {
             selectedImageUri?.let { uri ->
                 binding.imageView.setImageURI(uri)
@@ -46,7 +31,6 @@ class MainActivity : AppCompatActivity() {
 
     private val takePhotoImg = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap->
         bitmap?.let {
-
           val base64Is =  BaseConverter().getBase64FromBitmap(it)
             Log.d(TAG, "tHE base64 : ${base64Is}")
 
@@ -55,24 +39,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-      //  setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.apply {
             imageView.setOnClickListener {
               takeImage()
-              //  takePhotoImg.launch(null)
             }
 
             buttonUpload.setOnClickListener {
-                simplifiedUploadImage()
-          /*     selectedImageUri?.let { uri->
-
-                  //  uploadImageOkhttp(file)
-                   uploadImage()
-                }*/
-             //  uploadImage()
+                uploadImageToServer()
             }
         }
     }
@@ -89,7 +65,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     private fun getFileUri(fileName: String): Uri {
         val tmpFile = File.createTempFile(fileName, ".png", cacheDir).apply {
             createNewFile()
@@ -102,14 +77,12 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    private fun simplifiedUploadImage() {
+    private fun uploadImageToServer() {
 
         if (selectedImageUri == null) {
             binding.layoutRoot.snackbar("Select an Image First")
             return
         }
-
-              // val fileName = getRealPathFromURI(this, selectedImageUri!!)
 
         lifecycleScope.launchWhenStarted {
             Log.d(TAG, "The file is : ${selectedImageFile!!.absolutePath}")
@@ -117,14 +90,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun getMimeType(file: File): String? {
-        var type: String? = null
-        val extension = MimeTypeMap.getFileExtensionFromUrl(file.path)
-        if (extension != null) {
-            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
-        }
-        return type
-    }
 
     companion object {
         private  val TAG = MainActivity::class.simpleName

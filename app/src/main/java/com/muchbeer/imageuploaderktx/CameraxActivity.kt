@@ -158,7 +158,6 @@ class CameraxActivity : AppCompatActivity() {
         lifecycleScope.launchWhenStarted() {
             Repository().okhttpRun(selectedImageFile)
         }
-
     }
 
     private fun uploadImageCall() {
@@ -206,24 +205,6 @@ class CameraxActivity : AppCompatActivity() {
 
                 } else Log.d(TAG, "tHE error is ${checkResult.message()}")
 
-          /*      enqueue(object : Callback<ImageResponse> {
-                    override fun onResponse(
-                        call: Call<ImageResponse>,
-                        response: Response<ImageResponse>
-                    ) {
-                       if (response.isSuccessful) {
-                           response.body()!!.let {
-                                Log.d(TAG, "The json retrieved is : ${it.message}")
-                           }
-                       } else Log.d(TAG, "response Unsessful with error : ${response.message()}")
-
-                    }
-
-                    override fun onFailure(call: Call<ImageResponse>, error: Throwable) {
-                        Log.d(TAG, "tHE failure onFailure is : ${error.message}")
-                    }
-
-                })*/
             } catch (io : IOException) {
                 Log.d(TAG, "IOeRROR IS : ${io.message}")
             }

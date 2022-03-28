@@ -11,7 +11,6 @@ import android.provider.MediaStore
 import android.util.Log
 import java.lang.Exception
 
-
 private const val TAG = "Utils"
 fun View.snackbar(message: String) {
     Snackbar.make(
@@ -23,18 +22,6 @@ fun View.snackbar(message: String) {
             snackbar.dismiss()
         }
     }.show()
-}
-
-fun ContentResolver.getFileName(fileUri: Uri): String {
-    var name = ""
-    val returnCursor = this.query(fileUri, null, null, null, null)
-    if (returnCursor != null) {
-        val nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-        returnCursor.moveToFirst()
-        name = returnCursor.getString(nameIndex)
-        returnCursor.close()
-    }
-    return name
 }
 
  fun getRealPathFromURI(context: Activity, contentUri: Uri): String? {
